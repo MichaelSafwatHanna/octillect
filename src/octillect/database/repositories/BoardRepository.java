@@ -1,8 +1,10 @@
 package octillect.database.repositories;
 
+import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import javafx.collections.FXCollections;
@@ -10,6 +12,7 @@ import javafx.collections.FXCollections;
 import octillect.database.documents.BoardDocument;
 import octillect.database.documents.BoardDocument.ContributorMap;
 import octillect.database.documents.UserDocument;
+import octillect.database.firebase.Connection;
 import octillect.database.firebase.FirestoreAPI;
 import octillect.models.*;
 import octillect.models.builders.BoardBuilder;
@@ -53,6 +56,7 @@ public class BoardRepository implements Repository<Board> {
             tagsIds.add(tag.getId());
         }
         document.setTagsIds(tagsIds);
+        document.setActivity("no changes yet");
 
         FirestoreAPI.getInstance().insertDocument(FirestoreAPI.getInstance().BOARDS, document.getId(), document);
     }
@@ -198,6 +202,14 @@ public class BoardRepository implements Repository<Board> {
      */
     public void deleteColumnId(String boardId, String columnId) {
         FirestoreAPI.getInstance().deleteArrayElement(FirestoreAPI.getInstance().BOARDS, boardId, "columnsIds", columnId);
+    }
+
+    public DocumentReference getBoardReference(String boardId) {
+        return Connection.getInstance().firestore.collection(FirestoreAPI.getInstance().BOARDS).document(boardId);
+    }
+
+    public void pushActivity(String boarId, String activity){
+        FirestoreAPI.getInstance().updateAttribute(FirestoreAPI.getInstance().BOARDS, boarId, "activity", activity+ Calendar.getInstance().getTime());
     }
 
 }

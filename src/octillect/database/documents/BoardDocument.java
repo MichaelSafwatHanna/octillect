@@ -28,6 +28,7 @@ public class BoardDocument {
     private ArrayList<HashMap<String, String>> contributors = new ArrayList<>();
     private ArrayList<String> columnsIds = new ArrayList<>();
     private ArrayList<String> tagsIds = new ArrayList<>();
+    private String activity;
 
     public BoardDocument() {}
 
@@ -85,5 +86,13 @@ public class BoardDocument {
 
     public void setTagsIds(ArrayList<String> tagsId) {
         this.tagsIds = tagsId;
+    }
+
+    public String getActivity() {
+        return activity;
+    }
+
+    public void setActivity(String activity) {
+        this.activity = activity;
     }
 }

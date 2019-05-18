@@ -33,9 +33,11 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 
 import octillect.controllers.ApplicationController;
+import octillect.controllers.BoardController;
 import octillect.controllers.Injectable;
 import octillect.controllers.RightDrawerController;
 import octillect.controllers.settings.TaskSettingsController;
+import octillect.database.repositories.BoardRepository;
 import octillect.database.repositories.ColumnRepository;
 import octillect.database.repositories.TaskRepository;
 import octillect.models.Column;
@@ -62,12 +64,14 @@ public class TaskCell extends ListCell<Task> implements Injectable<ApplicationCo
 
     // Injected Controllers
     private ApplicationController applicationController;
+    private BoardController boardController;
     private RightDrawerController rightDrawerController;
     private TaskSettingsController taskSettingsController;
 
     @Override
     public void inject(ApplicationController applicationController) {
         this.applicationController = applicationController;
+        boardController            = applicationController.boardController;
         rightDrawerController      = applicationController.rightDrawerController;
         taskSettingsController     = rightDrawerController.taskSettingsController;
     }
@@ -146,7 +150,7 @@ public class TaskCell extends ListCell<Task> implements Injectable<ApplicationCo
                 FilteredList<Task> items = (FilteredList<Task>) getListView().getItems();
                 ObservableList<Task> source = (ObservableList<Task>) items.getSource();
                 source.add(getIndex(), sourceTask);
-
+                BoardRepository.getInstance().pushActivity(boardController.currentBoard.getId(),"CHANGED");
             }
         });
 

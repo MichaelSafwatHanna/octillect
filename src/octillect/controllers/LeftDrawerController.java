@@ -64,7 +64,10 @@ public class LeftDrawerController implements Injectable<ApplicationController> {
 
     @FXML
     public void handleUserBoardsListViewMouseClicked(MouseEvent mouseEvent) {
+        boardController.boardListener.remove();
+        boardController.isAttached = false;
         boardController.loadBoard(userBoardsListView.getSelectionModel().getSelectedItem());
+
     }
 
     @FXML

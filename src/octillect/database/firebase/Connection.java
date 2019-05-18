@@ -18,7 +18,7 @@ import octillect.exceptions.OCTException;
 
 public class Connection {
 
-    Firestore firestore;
+    public Firestore firestore;
     final String BOARD_ID                    = "octillect-a01c0";
     private final String DATABASE_URL        = "https://octillect-a01c0.firebaseio.com";
     private final String SERVICE_ACCOUNT_KEY = "src/octillect/database/firebase/firebase-key.json";

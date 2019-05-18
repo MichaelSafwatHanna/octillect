@@ -1,10 +1,12 @@
 package octillect.controllers;
 
+import com.google.cloud.firestore.ListenerRegistration;
 import com.jfoenix.controls.JFXTextField;
 
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -19,6 +21,7 @@ import octillect.controllers.settings.BoardSettingsController;
 import octillect.controllers.settings.GitHubRepositoryController;
 import octillect.controls.OButton;
 import octillect.controls.TasksColumn;
+import octillect.database.repositories.BoardRepository;
 import octillect.models.Board;
 import octillect.models.Column;
 import octillect.models.Task;
@@ -27,6 +30,8 @@ public class BoardController implements Injectable<ApplicationController> {
 
     // Local Fields
     public Board currentBoard;
+    public ListenerRegistration boardListener;
+    public boolean isAttached = false;
 
     enum FilterTarget {
         TASK_NAME,
@@ -118,6 +123,31 @@ public class BoardController implements Injectable<ApplicationController> {
             return tasksColumn;
         });
 
+        if(!isAttached) {
+            attachListener();
+        }
+    }
+
+    private void attachListener() {
+        isAttached = true;
+        boardListener = BoardRepository.getInstance()
+                .getBoardReference(currentBoard.getId())
+                .addSnapshotListener((snapshot, e) -> {
+            if (e != null) {
+                System.err.println("Listen failed: " + e);
+                return;
+            }
+
+            if (snapshot != null && snapshot.exists()) {
+                Platform.runLater(() -> {
+                    Board tempBoard = BoardRepository.getInstance().get(currentBoard.getId());
+                    loadBoard(tempBoard);
+                });
+
+            } else {
+                System.out.print("Current data: null");
+            }
+        });
     }
 
     @FXML

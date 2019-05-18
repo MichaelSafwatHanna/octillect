@@ -242,6 +242,7 @@ public class TasksColumn extends ListCell<Column> implements Injectable<Applicat
 
                 ColumnRepository.getInstance().updateTasksIds(sourceColumn.getId(), sourceTasksIds);
                 ColumnRepository.getInstance().updateTasksIds(targetColumn.getId(), targetTasksIds);
+                BoardRepository.getInstance().pushActivity(boardController.currentBoard.getId(),"CHANGED");
 
             }
         });
